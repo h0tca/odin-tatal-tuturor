@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Odin, zeul suprem al mitologiei nordice: înțelepciune, război și magie din tradiția vikingă.">
+<title>Odin, Tatăl Tuturor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500;700&family=Hanken+Grotesk:wght@400;500;700&family=Pixelify+Sans:wght@400;600&family=Noto+Sans+Runic&display=swap">
+<style>
+/* O singură lume vizuală: noapte nordică, pergament, fum. */
+:root{
+  color-scheme:dark;
+  --night:#0E0D0B;
+  --night-2:#171511;
+  --cream:#E7E0C8;
+  --bone:#A9A28B;
+  --dim:#6E6958;
+  --ghost:#3A372F;
+  --line:rgba(231,224,200,.32);
+  --ember:#C8563A;
+  --bevel:#C3C0B6;
+  --frame:12px;
+  --gut:max(28px, calc(var(--frame) + 18px));
+  --black:"Grenze Gotisch","UnifrakturMaguntia","Old English Text MT",Georgia,serif;
+  --sans:"Hanken Grotesk","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --pix:"Pixelify Sans","Courier New",ui-monospace,monospace;
+  --rune:"Noto Sans Runic","Segoe UI Historic","Segoe UI Symbol",serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--night)}
+body{margin:0;background:var(--night);color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--cream);outline-offset:4px}
+::selection{background:var(--cream);color:var(--night)}
+
+/* grăunte + ramă */
+.grain{position:fixed;inset:0;z-index:50;pointer-events:none;opacity:.10;mix-blend-mode:screen;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.2 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.frame{position:fixed;inset:calc(var(--frame) + env(safe-area-inset-top,0px)) var(--frame) calc(var(--frame) + env(safe-area-inset-bottom,0px));
+  z-index:40;pointer-events:none;border:1px solid var(--line)}
+.frame svg{position:absolute;width:34px;height:34px;color:var(--bone)}
+.frame .tl{top:-6px;left:-6px}
+.frame .tr{top:-6px;right:-6px;transform:scaleX(-1)}
+.frame .bl{bottom:-6px;left:-6px;transform:scaleY(-1)}
+.frame .br{bottom:-6px;right:-6px;transform:scale(-1,-1)}
+
+/* butoane-pastilă cu vârfuri de romb */
+.pill{appearance:none;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:10px;
+  background:var(--cream);color:var(--night);padding:8px 22px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;
+  clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 50%,calc(100% - 12px) 100%,12px 100%,0 50%);text-decoration:none;transition:background .2s}
+.pill::before,.pill::after{content:"";width:5px;height:5px;background:var(--night);transform:rotate(45deg);flex:none}
+.pill:hover{background:#fff}
+.contents-btn{position:fixed;top:calc(var(--frame) - 11px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:45}
+.sound{position:fixed;left:calc(var(--frame) + 12px);bottom:calc(var(--frame) + 10px + env(safe-area-inset-bottom,0px));z-index:45;
+  appearance:none;background:var(--night);border:0;padding:4px 6px;cursor:pointer;display:flex;gap:8px;align-items:center;
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--bone)}
+.sound svg{width:16px;height:16px}
+.sound:hover{color:var(--cream)}
+
+/* separatoare */
+.rule{display:flex;align-items:center;gap:0;width:100%;margin:0 auto;color:var(--bone)}
+.rule::before,.rule::after{content:"";width:7px;height:7px;border:1px solid currentColor;transform:rotate(45deg);flex:none}
+.rule span{flex:1;height:1px;background:currentColor;opacity:.7}
+
+.label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;line-height:1.4}
+.pix{font-family:var(--pix)}
+.center{text-align:center}
+.wrap{padding-inline:var(--gut)}
+.narrow{max-width:640px;margin-inline:auto}
+.wide{max-width:1120px;margin-inline:auto}
+
+/* ——— intrare ——— */
+.hero{min-height:94svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding-block:calc(var(--frame) + 56px) 48px;text-align:center}
+.presents .brand{font-weight:700;font-size:17px;letter-spacing:-.01em}
+.presents .label{display:block;font-size:9px;color:var(--bone);margin-top:2px}
+.medal{width:clamp(170px,22vw,240px);height:auto;color:var(--cream);margin-top:12px}
+.medal .spin{transform-box:view-box;transform-origin:200px 200px;animation:turn 120s linear infinite}
+@keyframes turn{to{transform:rotate(360deg)}}
+.title{font-family:var(--black);font-weight:700;font-size:clamp(96px,17vw,230px);line-height:.78;margin:6px 0 0;letter-spacing:-.01em;color:var(--cream)}
+.title small{display:block;font-size:.36em;line-height:1;margin-top:.12em;color:var(--bone);font-weight:500}
+.typed{font-family:var(--pix);font-size:clamp(18px,2vw,24px);color:var(--cream);min-height:1.4em;margin-top:8px}
+.typed .caret{display:inline-block;width:.55em;height:1em;background:var(--ember);vertical-align:-.12em;margin-left:3px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.hero .sub{font-size:13px;color:var(--bone);margin:0}
+.hint{font-family:var(--pix);font-size:13px;color:var(--dim);margin-top:26px}
+
+/* ——— bandă derulantă (IdiotBox) ——— */
+.ticker{background:var(--cream);color:var(--night);overflow:hidden;white-space:nowrap;border-block:2px solid var(--night);
+  font-family:var(--pix);font-size:14px;text-transform:uppercase;letter-spacing:.02em;position:relative;z-index:41}
+.ticker .track{display:inline-flex;gap:0;padding-block:8px;animation:roll 70s linear infinite}
+.ticker.rev .track{animation-direction:reverse;animation-duration:85s}
+.ticker span{padding-inline:22px}
+.ticker b{font-weight:600;color:var(--ember)}
+@keyframes roll{to{transform:translateX(-50%)}}
+.ticker:hover .track{animation-play-state:paused}
+
+/* ——— prolog cu cuvinte care se aprind ——— */
+.prolog{padding-block:22vh 16vh}
+.prolog p{font-size:clamp(18px,1.9vw,22px);line-height:1.4;margin:0 0 .7em;font-weight:500;text-wrap:balance}
+.prolog .w{color:var(--ghost);transition:color .35s}
+.prolog .w.on{color:var(--cream)}
+.prolog .pill{margin-top:22px}
+
+/* ——— capitole ——— */
+.chapter{padding-block:12vh 6vh;scroll-margin-top:30px}
+.chapter > .rule{max-width:1120px}
+.ch-head{text-align:center;padding-top:56px}
+.ch-title{font-family:var(--black);font-weight:700;color:var(--bone);font-size:clamp(58px,10.5vw,158px);line-height:.86;margin:0 auto;max-width:12ch;text-wrap:balance;letter-spacing:-.005em}
+.emb{width:clamp(120px,13vw,160px);height:auto;margin:34px auto 10px;display:block;color:var(--cream)}
+.ch-num{color:var(--bone);margin-top:6px}
+.ch-intro{color:var(--bone);font-size:15px;max-width:52ch;margin:14px auto 0;text-wrap:balance}
+.ch-body{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px clamp(28px,6vw,96px);align-items:start;margin-top:72px}
+.shout{font-weight:700;text-transform:uppercase;font-size:clamp(24px,3.1vw,42px);line-height:1.02;letter-spacing:-.015em;margin:0;color:var(--cream);text-wrap:balance}
+.shout + .rule{margin-top:28px;max-width:220px;margin-inline:0}
+.cite{color:var(--bone);margin-top:14px}
+.prose p{margin:0 0 1em;max-width:46ch;color:var(--cream)}
+.prose p:first-child::first-letter{font-family:var(--black);font-size:3.6em;float:left;line-height:.8;padding:.06em .08em 0 0;color:var(--bone)}
+.prose .src{color:var(--dim);margin-top:18px}
+
+/* nume */
+.names{margin-top:84px}
+.names h3,.ledger h3{font-family:var(--black);font-weight:700;font-size:clamp(34px,4vw,54px);color:var(--bone);margin:0 0 6px;line-height:1;text-align:center}
+.names ul{list-style:none;padding:0;margin:26px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 clamp(18px,3vw,40px)}
+.names li{padding:11px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.names li b{font-family:var(--black);font-size:22px;font-weight:700;line-height:1}
+.names li span{font-size:13px;color:var(--bone);text-align:right}
+.names .note{color:var(--dim);font-size:13px;margin-top:18px;text-align:center}
+
+/* rune */
+.runes{margin-top:84px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px clamp(28px,5vw,72px);align-items:start}
+.rdetail{border:1px solid var(--line);padding:24px;display:grid;grid-template-columns:auto 1fr;gap:4px 22px;align-items:center;position:relative}
+.rdetail .big{font-family:var(--rune);font-size:clamp(84px,9vw,120px);line-height:1;grid-row:span 3;min-width:1ch;text-align:center;color:var(--cream)}
+.rdetail .nm{font-family:var(--black);font-size:38px;font-weight:700;line-height:1}
+.rdetail .mn{font-size:15px}
+.rdetail .mn.odin{color:var(--ember)}
+.omen{font-family:var(--pix);font-size:14px;color:var(--bone);margin-top:16px;min-height:1.5em}
+.bevel{appearance:none;cursor:pointer;margin-top:18px;font-family:var(--pix);font-size:15px;color:#111;background:var(--bevel);border:0;padding:9px 16px;
+  box-shadow:inset -2px -2px 0 #5d5a52,inset 2px 2px 0 #fff,4px 4px 0 #000}
+.bevel:active{box-shadow:inset 2px 2px 0 #5d5a52,inset -2px -2px 0 #fff,1px 1px 0 #000;transform:translate(3px,3px)}
+.aett + .aett{margin-top:18px}
+.aett .label{color:var(--bone);margin-bottom:8px}
+.row8{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}
+.rb{appearance:none;border:1px solid var(--line);background:transparent;aspect-ratio:1/1;cursor:pointer;position:relative;display:grid;place-items:center;
+  font-family:var(--rune);font-size:clamp(20px,2.3vw,30px);line-height:1;padding:0;color:var(--cream);transition:background .2s,color .2s}
+.rb small{position:absolute;left:5px;bottom:3px;font-family:var(--sans);font-size:10px;color:var(--dim)}
+.rb:hover{background:var(--night-2);border-color:var(--bone)}
+.rb[aria-pressed="true"]{background:var(--cream);color:var(--night);border-color:var(--cream)}
+.rb[aria-pressed="true"] small{color:var(--night)}
+
+/* două daruri */
+.gifts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px clamp(28px,6vw,96px);margin-top:72px}
+.gift .emb{margin:0 0 18px}
+.gift h3{font-family:var(--black);font-size:clamp(40px,4.6vw,64px);font-weight:700;color:var(--bone);line-height:.9;margin:0 0 14px}
+.gift p{margin:0 0 1em;max-width:46ch}
+.gift .src{color:var(--dim)}
+
+/* registru */
+.ledger{margin-top:96px}
+.ledger .intro{color:var(--bone);text-align:center;margin:10px auto 30px;max-width:48ch;font-size:15px}
+.ledger dl{margin:0;border-bottom:1px solid var(--line)}
+.ledger .r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;padding:13px 0;border-top:1px solid var(--line);align-items:baseline}
+.ledger dt{margin:0}
+.ledger dt em{font-style:normal;color:var(--dim);font-weight:400;letter-spacing:.04em;text-transform:none;font-size:13px;margin-left:8px}
+.ledger dd{margin:0;font-variant-numeric:tabular-nums;font-size:18px;font-weight:500}
+.ledger .tot dt{font-family:var(--black);font-size:30px;font-weight:700;letter-spacing:0;text-transform:none;line-height:1}
+.ledger .tot dd{font-family:var(--black);font-size:clamp(40px,5vw,64px);font-weight:700;line-height:1}
+
+/* miercuri */
+.days dl{margin:0}
+.days .r{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:18px;padding:12px 0;border-top:1px solid var(--line);align-items:baseline}
+.days dt{margin:0;color:var(--bone)}
+.days dd{margin:0;font-size:21px;font-weight:500;letter-spacing:-.01em}
+.days dd em{font-style:normal;color:var(--dim);font-size:13px;display:block;letter-spacing:0}
+.days .hl dd{color:var(--ember)}
+.chip{font-family:var(--pix);color:var(--cream);font-size:15px;margin-top:22px;display:inline-block;border:1px dashed var(--line);padding:6px 12px}
+
+/* final */
+.end{padding-block:14vh calc(var(--frame) + 80px);text-align:center}
+.end .ch-title{max-width:14ch}
+.end .crash{font-family:var(--pix);color:var(--bone);font-size:clamp(16px,1.6vw,19px);max-width:44ch;margin:34px auto 0;line-height:1.5}
+.end .pill{margin-top:28px}
+.sources{margin-top:80px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;text-align:left}
+.sources div{border-top:1px solid var(--line);padding-top:12px;font-size:14px}
+.sources .label{color:var(--bone);display:block;margin-bottom:4px}
+
+/* cuprins */
+dialog.toc{border:0;padding:0;margin:0;width:100%;max-width:100%;height:100%;max-height:100%;background:var(--night);color:var(--cream);overflow:auto;overscroll-behavior:contain}
+dialog.toc::backdrop{background:var(--night)}
+dialog.toc[open]{animation:fade .35s ease}
+@keyframes fade{from{opacity:0}}
+.toc-in{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:80px var(--gut) 60px}
+.toc ol{list-style:none;margin:10px 0 24px;padding:0;text-align:center;counter-reset:c}
+.toc li a{display:flex;flex-direction:column;align-items:center;text-decoration:none;padding:7px 0}
+.toc li .label{color:var(--dim)}
+.toc li .t{font-family:var(--black);font-weight:700;font-size:clamp(30px,4.2vw,50px);line-height:1;color:var(--bone);transition:color .2s}
+.toc li a:hover .t,.toc li a:focus-visible .t{color:var(--cream)}
+
+/* ——— responsive ——— */
+@media (max-width:860px){
+  .ch-body,.runes,.gifts{grid-template-columns:1fr}
+  .names ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sources{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  :root{--frame:7px}
+  .names ul{grid-template-columns:1fr}
+  .sources{grid-template-columns:1fr}
+  .row8{gap:3px}
+  .rb small{display:none}
+  .rdetail{padding:18px;gap:4px 16px}
+  .ch-body{margin-top:52px}
+  .frame svg{width:26px;height:26px}
+  .days .r{grid-template-columns:1fr;gap:2px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .medal .spin,.orbit,.ticker .track,.typed .caret{animation:none}
+  .prolog .w{color:var(--cream);transition:none}
+  dialog.toc[open]{animation:none}
+}
+.orbit{transform-box:view-box;transform-origin:200px 200px;animation:turn 30s linear infinite}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(40)">
+      <line x1="0" y1="0" x2="0" y2="5" stroke="#E7E0C8" stroke-width="1.1"/>
+    </pattern>
+    <pattern id="hatch2" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(-50)">
+      <line x1="0" y1="0" x2="0" y2="4" stroke="#E7E0C8" stroke-width=".8"/>
+    </pattern>
+    <path id="ringpath" d="M200,200 m-162,0 a162,162 0 1,1 324,0 a162,162 0 1,1 -324,0"/>
+  </defs>
+</svg>
+
+<div class="grain" aria-hidden="true"></div>
+<div class="frame" aria-hidden="true">
+  <svg class="tl" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 6 L6 30 M6 6 L30 6"/><path d="M6 18 C12 18 18 12 18 6"/><path d="M11 11 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0"/><path d="M6 6 L2 2" /><rect x="3.5" y="3.5" width="5" height="5" transform="rotate(45 6 6)" fill="currentColor"/></svg>
+  <svg class="tr" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 6 L6 30 M6 6 L30 6"/><path d="M6 18 C12 18 18 12 18 6"/><path d="M11 11 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0"/><rect x="3.5" y="3.5" width="5" height="5" transform="rotate(45 6 6)" fill="currentColor"/></svg>
+  <svg class="bl" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 6 L6 30 M6 6 L30 6"/><path d="M6 18 C12 18 18 12 18 6"/><path d="M11 11 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0"/><rect x="3.5" y="3.5" width="5" height="5" transform="rotate(45 6 6)" fill="currentColor"/></svg>
+  <svg class="br" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1"><path d="M6 6 L6 30 M6 6 L30 6"/><path d="M6 18 C12 18 18 12 18 6"/><path d="M11 11 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0"/><rect x="3.5" y="3.5" width="5" height="5" transform="rotate(45 6 6)" fill="currentColor"/></svg>
+</div>
+
+<button class="pill contents-btn" type="button" id="tocBtn" aria-haspopup="dialog">Cuprins</button>
+<button class="sound" type="button" id="sound" aria-pressed="false">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M2 6h3l4-3v10l-4-3H2z" fill="currentColor"/><path id="sWave" d="M11.5 5.5c1 1.4 1 3.6 0 5M13.5 3.5c2 2.5 2 6.5 0 9"/><path id="sOff" d="M11 6l4 4M15 6l-4 4"/></svg>
+  <span id="sLbl">Vânt: oprit</span>
+</button>
+
+<main>
+  <!-- ——— INTRARE ——— -->
+  <header class="hero wrap" id="sus">
+    <div class="presents"><span class="brand">Edda</span><span class="label">prezintă</span></div>
+    <svg class="medal" viewBox="0 0 400 400" aria-hidden="true" id="medal"></svg>
+    <h1 class="title">Odin<small>Tatăl Tuturor</small></h1>
+    <div class="typed" aria-live="off"><span id="typed">Înțelept.</span><span class="caret"></span></div>
+    <p class="sub">Zeul suprem al mitologiei nordice · înțelepciune, război și magie</p>
+    <a class="pill" href="#prolog" style="margin-top:14px">Să începem</a>
+    <div class="hint">↓ Derulează până nu începe Ragnarökul ↓</div>
+  </header>
+
+  <div class="ticker" aria-label="Știri din Asgard"><div class="track" id="tick1"></div></div>
+
+  <!-- ——— PROLOG ——— -->
+  <section class="prolog wrap center" id="prolog">
+    <div class="narrow" id="reveal">
+      <p>În orice saga, înțelepciunea are un preț.</p>
+      <p>Capitolele de mai jos spun povestea unui zeu care a plătit pentru tot ce știe.</p>
+      <p>Vikingii își spuneau lumea la focul din sala lungă, în nopțile fără sfârșit ale nordului.</p>
+      <p>Aceasta este una dintre ele.</p>
+    </div>
+    <a class="pill" href="#cine">Continuă călătoria</a>
+  </section>
+
+  <!-- ——— CINE ESTE ODIN ——— -->
+  <section class="chapter wrap" id="cine">
+    <div class="rule"><span></span></div>
+    <div class="ch-head">
+      <h2 class="ch-title">Cel care nu vine de pe Olimp</h2>
+      <svg class="emb" viewBox="0 0 400 400" data-art="eye" aria-hidden="true"></svg>
+      <div class="label ch-num">Prolog</div>
+      <p class="ch-intro">Povestea noastră începe cu un rătăcitor cu pălărie largă, mantie albastră și un singur ochi.</p>
+    </div>
+    <div class="ch-body wide">
+      <div>
+        <p class="shout">Odin este zeul suprem al mitologiei nordice, asociat cu înțelepciunea, războiul și magia.</p>
+        <div class="rule"><span></span></div>
+        <div class="label cite">— Tradiția vikingă, nu cea greco-romană</div>
+      </div>
+      <div class="prose">
+        <p>Odin nu provine dintr-un mit antic greco-roman, ci din tradiția vikingă. Nu are temple de marmură: îl cunoaștem din poemele islandeze ale Eddei poetice, din Edda în proză scrisă de Snorri Sturluson în jurul anului 1220 și din pietrele runice ridicate în toată Scandinavia.</p>
+        <p>Este stăpânul Asgardului, soțul zeiței Frigg și tatăl lui Thor, Baldr și Víðarr. Din tronul său, Hliðskjálf, vede toate cele nouă lumi. Și este un zeu care plătește pentru tot ce știe: un ochi pentru înțelepciune, nouă nopți în copac pentru rune, trei nopți de vicleșug pentru poezie.</p>
+        <div class="label src">Izvoare: Völuspá · Grímnismál · Gylfaginning</div>
+      </div>
+    </div>
+
+    <div class="names wide">
+      <h3>O sută șaptezeci de nume</h3>
+      <p class="label center" style="color:var(--bone)">Pentru că un zeu rătăcitor nu se prezintă niciodată la fel de două ori</p>
+      <ul>
+        <li><b>Alfǫðr</b><span>Tatăl Tuturor</span></li>
+        <li><b>Valfǫðr</b><span>Tatăl celor căzuți</span></li>
+        <li><b>Hárr</b><span>Cel Înalt</span></li>
+        <li><b>Grímnir</b><span>Cel Mascat</span></li>
+        <li><b>Gangleri</b><span>Rătăcitorul</span></li>
+        <li><b>Yggr</b><span>Cel Înfricoșător</span></li>
+        <li><b>Bölverkr</b><span>Făcătorul de rele</span></li>
+        <li><b>Hrafnaguð</b><span>Zeul Corbilor</span></li>
+        <li><b>Sigfǫðr</b><span>Tatăl Biruinței</span></li>
+        <li><b>Hangaguð</b><span>Zeul Spânzuraților</span></li>
+        <li><b>Báleygr</b><span>Ochi de flacără</span></li>
+        <li><b>Wōden</b><span>Numele anglo-saxon</span></li>
+      </ul>
+      <p class="note">Doar în poemul Grímnismál, Odin își rostește peste cincizeci de nume.</p>
+    </div>
+  </section>
+
+  <!-- ——— I ——— -->
+  <section class="chapter wrap" id="mimir">
+    <div class="rule"><span></span></div>
+    <div class="ch-head">
+      <h2 class="ch-title">Ochiul din fântână</h2>
+      <svg class="emb" viewBox="0 0 400 400" data-art="mimir" aria-hidden="true"></svg>
+      <div class="label ch-num">Capitolul I</div>
+      <p class="ch-intro">Sub rădăcinile frasinului lumii se află o apă în care e ascunsă toată cunoașterea.</p>
+    </div>
+    <div class="ch-body wide">
+      <div>
+        <p class="shout">O singură înghițitură de înțelepciune. Prețul: un ochi.</p>
+        <div class="rule"><span></span></div>
+        <div class="label cite">— Völuspá, strofa 28</div>
+      </div>
+      <div class="prose">
+        <p>Sub una dintre rădăcinile lui Yggdrasil se află fântâna lui Mímir, cel mai înțelept dintre ființe. El o păzește și bea din ea în fiecare dimineață.</p>
+        <p>Odin a cerut să bea și el. Mímir i-a cerut în schimb un ochi. Zeul și l-a scos și l-a lăsat pe fundul fântânii. De atunci umblă printre lumi cu un singur ochi — semnul că înțelepciunea adevărată nu se primește gratuit.</p>
+        <div class="label src">Izvoare: Völuspá 28 · Gylfaginning 15</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— II ——— -->
+  <section class="chapter wrap" id="rune">
+    <div class="rule"><span></span></div>
+    <div class="ch-head">
+      <h2 class="ch-title">Nouă nopți în copac</h2>
+      <svg class="emb" viewBox="0 0 400 400" data-art="nine" aria-hidden="true"></svg>
+      <div class="label ch-num">Capitolul II</div>
+      <p class="ch-intro">Cum a căpătat lumea scrisul: printr-un zeu care s-a sacrificat pe sine însuși.</p>
+    </div>
+    <div class="ch-body wide">
+      <div>
+        <p class="shout">„Știu că am atârnat în copacul bătut de vânturi nouă nopți întregi, dăruit lui Odin — eu însumi mie însumi.”</p>
+        <div class="rule"><span></span></div>
+        <div class="label cite">— Hávamál, strofa 138</div>
+      </div>
+      <div class="prose">
+        <p>Rănit de propria suliță, fără pâine și fără apă, Odin a atârnat în Yggdrasil și a privit în adânc. În a noua noapte a zărit runele. Le-a ridicat strigând și a căzut din copac, aducând cu el scrisul și magia ascunsă în fiecare semn.</p>
+        <p>Numele copacului păstrează povestea: Yggr, „Cel Înfricoșător”, este unul dintre numele lui Odin, iar drasill înseamnă cal. Yggdrasil este „calul lui Yggr”, spânzurătoarea pe care zeul a călărit-o.</p>
+        <div class="label src">Izvoare: Hávamál 138–139</div>
+      </div>
+    </div>
+
+    <div class="runes wide">
+      <div>
+        <div class="label" style="color:var(--bone)">Futhark-ul vechi · 24 de rune</div>
+        <p style="max-width:44ch;margin:10px 0 22px">Cel mai vechi alfabet runic, folosit între secolele II și VIII, poartă numele primelor șase litere: f‑u‑th‑a‑r‑k. Runele sunt împărțite în trei familii de câte opt, numite ætt.</p>
+        <div class="rdetail" aria-live="polite">
+          <div class="big" id="rBig">ᚨ</div>
+          <div class="nm" id="rName">Ansuz</div>
+          <div class="label" style="color:var(--bone)" id="rSound">Sunet: a · Ætt-ul lui Freyr</div>
+          <div class="mn odin" id="rMean">zeu — runa lui Odin însuși</div>
+        </div>
+        <div class="omen" id="omen">Alege o rună sau las-o pe Norne să aleagă.</div>
+        <button class="bevel" type="button" id="cast">Aruncă runele, muritorule!</button>
+      </div>
+      <div id="board"></div>
+    </div>
+  </section>
+
+  <!-- ——— III ——— -->
+  <section class="chapter wrap" id="corbi">
+    <div class="rule"><span></span></div>
+    <div class="ch-head">
+      <h2 class="ch-title">Gândul și memoria</h2>
+      <svg class="emb" viewBox="0 0 400 400" data-art="ravens" aria-hidden="true"></svg>
+      <div class="label ch-num">Capitolul III</div>
+      <p class="ch-intro">Doi corbi, o lume întreagă, un singur raport pe zi.</p>
+    </div>
+    <div class="ch-body wide">
+      <div>
+        <p class="shout">Mă tem pentru Hugin să nu se întoarcă. Dar mă tem și mai mult pentru Munin.</p>
+        <div class="rule"><span></span></div>
+        <div class="label cite">— Grímnismál, strofa 20</div>
+      </div>
+      <div class="prose">
+        <p>În fiecare dimineață, doi corbi pleacă de pe umerii lui Odin și zboară peste Midgard. Seara se întorc și îi spun la ureche tot ce au văzut și au auzit.</p>
+        <p>Hugin înseamnă „gând”, Munin înseamnă „memorie”. La picioarele zeului stau doi lupi, Geri și Freki, cărora le dă toată mâncarea de la masă; Odin însuși nu se hrănește decât cu vin. De aici vine unul dintre numele lui: Hrafnaguð, Zeul Corbilor.</p>
+        <div class="label src">Izvoare: Grímnismál 19–20 · Gylfaginning 38</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— IV ——— -->
+  <section class="chapter wrap" id="mied">
+    <div class="rule"><span></span></div>
+    <div class="ch-head">
+      <h2 class="ch-title">Miedul poeziei</h2>
+      <svg class="emb" viewBox="0 0 400 400" data-art="mead" aria-hidden="true"></svg>
+      <div class="label ch-num">Capitolul IV</div>
+      <p class="ch-intro">Despre trei nopți, trei înghițituri și un vultur care zboară spre casă.</p>
+    </div>
+    <div class="ch-body wide">
+      <div>
+        <p class="shout">Trei înghițituri, trei vase goale. Așa a ajuns poezia la oameni.</p>
+        <div class="rule"><span></span></div>
+        <div class="label cite">— Skáldskaparmál, cap. 4–6</div>
+      </div>
+      <div class="prose">
+        <p>Din sângele înțeleptului Kvasir, doi pitici au fiert un mied care face poet și învățat pe oricine îl bea. Uriașul Suttungr l-a ascuns în inima unui munte, sub paza fiicei sale, Gunnlöð.</p>
+        <p>Sub numele Bölverkr, Odin a stat trei nopți cu Gunnlöð și a primit trei înghițituri. Cu fiecare a golit câte un vas — Óðrerir, Boðn și Són —, apoi a zburat spre Asgard în chip de vultur. De aceea poezia este numită darul lui Odin.</p>
+        <div class="label src">Izvoare: Skáldskaparmál 4–6 · Hávamál 104–110</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— V ——— -->
+  <section class="chapter wrap" id="daruri">
+    <div class="rule"><span></span></div>
+    <div class="ch-head">
+      <h2 class="ch-title">Darurile piticilor</h2>
+      <div class="label ch-num" style="margin-top:28px">Capitolul V</div>
+      <p class="ch-intro">Făurite în adâncul pământului, aduse în Asgard de Loki.</p>
+    </div>
+    <div class="gifts wide">
+      <div class="gift">
+        <svg class="emb" viewBox="0 0 400 400" data-art="gungnir" aria-hidden="true"></svg>
+        <h3>Gungnir</h3>
+        <p>Sulița lui Odin a fost făurită de fiii lui Ívaldi și nu își ratează niciodată ținta. Primul război din lume a început când Odin a aruncat-o peste oastea dușmană.</p>
+        <p>Vikingii au păstrat gestul: o suliță aruncată peste armata adversă o închina pe aceasta, întreagă, lui Odin.</p>
+        <div class="label src">Völuspá 24 · Skáldskaparmál 35</div>
+      </div>
+      <div class="gift">
+        <svg class="emb" viewBox="0 0 400 400" data-art="draupnir" aria-hidden="true"></svg>
+        <h3>Draupnir</h3>
+        <p>Inelul de aur făurit de Brokkr și Eitri. În fiecare a noua noapte, din el picură opt inele la fel de grele ca el.</p>
+        <p>Odin l-a așezat pe rugul fiului său, Baldr. Când Hermóðr a coborât în Hel să-l ceară înapoi, Baldr i-a dat inelul ca semn pentru tatăl său.</p>
+        <div class="label src">Skáldskaparmál 35 · Gylfaginning 49</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— VI ——— -->
+  <section class="chapter wrap" id="sleipnir">
+    <div class="rule"><span></span></div>
+    <div class="ch-head">
+      <h2 class="ch-title">Calul cu opt picioare</h2>
+      <svg class="emb" viewBox="0 0 400 400" data-art="sleipnir" aria-hidden="true"></svg>
+      <div class="label ch-num">Capitolul VI</div>
+      <p class="ch-intro">Cel mai iute cal din toate lumile. Nu întreba cum a venit pe lume.</p>
+    </div>
+    <div class="ch-body wide">
+      <div>
+        <p class="shout">Opt picioare, prin aer, peste mare și până în Hel.</p>
+        <div class="rule"><span></span></div>
+        <div class="label cite">— Gylfaginning, cap. 42</div>
+      </div>
+      <div class="prose">
+        <p>Sleipnir este fiul lui Loki, care, prefăcut în iapă, l-a atras departe pe armăsarul Svaðilfari, pentru ca zidul Asgardului să nu fie terminat la timp de uriașul constructor.</p>
+        <p>O interpretare spune că cele opt picioare amintesc de cei patru oameni care poartă un sicriu pe umeri: Sleipnir ar fi calul care îi duce pe morți spre lumea de dincolo.</p>
+        <div class="label src">Izvoare: Gylfaginning 42 · Baldrs draumar</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— VII ——— -->
+  <section class="chapter wrap" id="valhalla">
+    <div class="rule"><span></span></div>
+    <div class="ch-head">
+      <h2 class="ch-title">Sala celor căzuți</h2>
+      <svg class="emb" viewBox="0 0 400 400" data-art="valhalla" aria-hidden="true"></svg>
+      <div class="label ch-num">Capitolul VII</div>
+      <p class="ch-intro">Acoperiș de scuturi, căpriori din sulițe și un ospăț care nu se termină.</p>
+    </div>
+    <div class="ch-body wide">
+      <div>
+        <p class="shout">Cinci sute patruzeci de uși. Opt sute de luptători prin fiecare.</p>
+        <div class="rule"><span></span></div>
+        <div class="label cite">— Grímnismál, strofa 23</div>
+      </div>
+      <div class="prose">
+        <p>În Asgard se înalță Valhalla, sala lui Odin. Valkiriile aleg jumătate dintre războinicii căzuți în luptă și îi aduc aici; cealaltă jumătate merge la zeița Freyja.</p>
+        <p>Einherjarii se luptă ziua, se vindecă seara și ospătează noaptea din carnea mistrețului Sæhrímnir, care renaște în fiecare dimineață. Totul este o pregătire pentru ultima bătălie.</p>
+        <div class="label src">Izvoare: Grímnismál 8–9, 18, 23</div>
+      </div>
+    </div>
+
+    <div class="ledger narrow">
+      <h3>Registrul lui Odin</h3>
+      <p class="intro">Tot ce se poate număra despre Tatăl Tuturor, după izvoarele medievale.</p>
+      <dl>
+        <div class="r"><dt class="label">Ochi<em>celălalt e în fântâna lui Mímir</em></dt><dd>1</dd></div>
+        <div class="r"><dt class="label">Corbi<em>Hugin și Munin</em></dt><dd>2</dd></div>
+        <div class="r"><dt class="label">Lupi<em>Geri și Freki</em></dt><dd>2</dd></div>
+        <div class="r"><dt class="label">Înghițituri de mied</dt><dd>3</dd></div>
+        <div class="r"><dt class="label">Picioare ale lui Sleipnir</dt><dd>8</dd></div>
+        <div class="r"><dt class="label">Nopți în Yggdrasil</dt><dd>9</dd></div>
+        <div class="r"><dt class="label">Rune în futhark-ul vechi</dt><dd>24</dd></div>
+        <div class="r"><dt class="label">Uși în Valhalla</dt><dd>540</dd></div>
+        <div class="r"><dt class="label">Luptători prin fiecare ușă</dt><dd>800</dd></div>
+        <div class="r tot"><dt>Einherjari la Ragnarök</dt><dd>432.000</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ——— VIII ——— -->
+  <section class="chapter wrap" id="miercuri">
+    <div class="rule"><span></span></div>
+    <div class="ch-head">
+      <h2 class="ch-title">Ziua lui Odin</h2>
+      <svg class="emb" viewBox="0 0 400 400" data-art="week" aria-hidden="true"></svg>
+      <div class="label ch-num">Capitolul VIII</div>
+      <p class="ch-intro">Romanii nu aveau un Odin, așa că l-au tradus.</p>
+    </div>
+    <div class="ch-body wide">
+      <div>
+        <p class="shout">„Deorum maxime Mercurium colunt.” Dintre zei, îl cinstesc cel mai mult pe Mercur.</p>
+        <div class="rule"><span></span></div>
+        <div class="label cite">— Tacitus, Germania, 9 (anul 98)</div>
+        <p class="prose" style="margin-top:28px;max-width:46ch">Scriind despre triburile germanice, Tacitus l-a numit pe zeul lor cel mai mare cu numele lui Mercur. Când germanicii au preluat săptămâna romană, au făcut drumul invers: ziua lui Mercur a devenit ziua lui Woden. De aceea miercuri și Wednesday sunt aceeași zi.</p>
+        <div class="chip" id="chip">Ziua lui Odin</div>
+      </div>
+      <div class="days">
+        <dl>
+          <div class="r"><dt class="label">Latină</dt><dd>dies Mercurii</dd></div>
+          <div class="r"><dt class="label">Română</dt><dd>miercuri</dd></div>
+          <div class="r hl"><dt class="label">Engleză veche</dt><dd>Wōdnesdæg<em>ziua lui Woden</em></dd></div>
+          <div class="r hl"><dt class="label">Engleză</dt><dd>Wednesday</dd></div>
+          <div class="r hl"><dt class="label">Suedeză · Daneză</dt><dd>onsdag<em>din Óðinsdagr</em></dd></div>
+          <div class="r hl"><dt class="label">Neerlandeză</dt><dd>woensdag</dd></div>
+          <div class="r"><dt class="label">Germană</dt><dd>Mittwoch<em>„mijlocul săptămânii” — numele zeului a fost înlocuit</em></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— EPILOG ——— -->
+  <section class="chapter wrap" id="ragnarok">
+    <div class="rule"><span></span></div>
+    <div class="ch-head">
+      <h2 class="ch-title">Amurgul zeilor</h2>
+      <svg class="emb" viewBox="0 0 400 400" data-art="ragnarok" aria-hidden="true"></svg>
+      <div class="label ch-num">Epilog</div>
+      <p class="ch-intro">Tot ce a aflat Odin, a aflat ca să știe cum se va sfârși lumea.</p>
+    </div>
+    <div class="ch-body wide">
+      <div>
+        <p class="shout">Lupul îl înghite pe Tatăl Tuturor. Din mare se ridică un pământ nou, veșnic verde.</p>
+        <div class="rule"><span></span></div>
+        <div class="label cite">— Völuspá, strofele 53–59</div>
+      </div>
+      <div class="prose">
+        <p>La Ragnarök, Odin călărește în fruntea zeilor, cu coif de aur și cu Gungnir în mână, împotriva lupului Fenrir. Lupul îl înghite.</p>
+        <p>Fiul său, Víðarr, îl răzbună: pune piciorul pe falca de jos a lupului și îi sfâșie gura. Apoi, spune văzătoarea din Völuspá, pământul se ridică din nou din ape, iar câmpurile rodesc fără să fie semănate.</p>
+        <div class="label src">Izvoare: Völuspá 53–59 · Gylfaginning 51</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker rev" aria-hidden="true"><div class="track" id="tick2"></div></div>
+
+  <footer class="end wrap" id="izvoare">
+    <h2 class="ch-title">Cine caută înțelepciunea plătește cu un ochi</h2>
+    <p class="crash">Ai derulat prea departe. Pagina a căzut în Ginnungagap, hăul de dinaintea lumii. Versiunea actuală a ta a hotărât să se întoarcă.</p>
+    <a class="pill" href="#sus">Înapoi în Asgard</a>
+    <div class="sources wide">
+      <div><span class="label">Izvoare</span>Edda poetică<br>Edda în proză</div>
+      <div><span class="label">Poeme</span>Völuspá · Hávamál<br>Grímnismál</div>
+      <div><span class="label">Autor medieval</span>Snorri Sturluson<br>Islanda, c. 1220</div>
+      <div><span class="label">Scris în</span>Midgard<br>sub privirea unui singur ochi</div>
+    </div>
+  </footer>
+</main>
+
+<dialog class="toc" id="toc" aria-label="Cuprins">
+  <div class="toc-in">
+    <div class="label" style="color:var(--bone)">Cuprins</div>
+    <ol>
+      <li><a href="#cine"><span class="label">Prolog</span><span class="t">Cel care nu vine de pe Olimp</span></a></li>
+      <li><a href="#mimir"><span class="label">I</span><span class="t">Ochiul din fântână</span></a></li>
+      <li><a href="#rune"><span class="label">II</span><span class="t">Nouă nopți în copac</span></a></li>
+      <li><a href="#corbi"><span class="label">III</span><span class="t">Gândul și memoria</span></a></li>
+      <li><a href="#mied"><span class="label">IV</span><span class="t">Miedul poeziei</span></a></li>
+      <li><a href="#daruri"><span class="label">V</span><span class="t">Darurile piticilor</span></a></li>
+      <li><a href="#sleipnir"><span class="label">VI</span><span class="t">Calul cu opt picioare</span></a></li>
+      <li><a href="#valhalla"><span class="label">VII</span><span class="t">Sala celor căzuți</span></a></li>
+      <li><a href="#miercuri"><span class="label">VIII</span><span class="t">Ziua lui Odin</span></a></li>
+      <li><a href="#ragnarok"><span class="label">Epilog</span><span class="t">Amurgul zeilor</span></a></li>
+    </ol>
+    <button class="pill" type="button" id="tocClose">Închide</button>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  const BG='#0E0D0B';
+  const $=id=>document.getElementById(id);
+
+  /* ——— embleme gravate ——— */
+  function ring(cx,cy,r,sw,extra){return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="currentColor" stroke-width="${sw}" ${extra||''}/>`}
+  function valknut(sw){let s='';for(let i=0;i<3;i++){const a=(-90+120*i)*Math.PI/180,cx=200+30*Math.cos(a),cy=214+30*Math.sin(a);
+    const p=[-90,30,150].map(d=>{const r=d*Math.PI/180;return (cx+100*Math.cos(r)).toFixed(1)+','+(cy+100*Math.sin(r)).toFixed(1)}).join(' ');
+    s+=`<polygon points="${p}" fill="none" stroke="${BG}" stroke-width="${sw+8}" stroke-linejoin="miter"/><polygon points="${p}" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linejoin="miter"/>`}return s}
+  const ART={
+    eye:()=>`<path d="M60 200 Q200 70 340 200 Q200 330 60 200Z" fill="url(#hatch2)" stroke="currentColor" stroke-width="3"/>`+
+      ring(200,200,62,3,`fill="${BG}"`)+`<circle cx="200" cy="200" r="30" fill="currentColor"/><circle cx="212" cy="188" r="8" fill="${BG}"/>`,
+    mimir:()=>[22,50,78,106,134].map((r,i)=>ring(200,200,r,2.2,`stroke-opacity="${(1-i*.16).toFixed(2)}"`)).join('')+`<circle cx="200" cy="200" r="11" fill="currentColor"/>`,
+    nine:()=>{let g=`<line x1="118" y1="50" x2="118" y2="350" stroke="currentColor" stroke-width="4"/><path d="M118 350 L78 372 M118 350 L158 372" stroke="currentColor" stroke-width="2"/>`;
+      for(let i=0;i<9;i++){const y=86+i*29;g+=`<line x1="160" y1="${y}" x2="300" y2="${y}" stroke="currentColor" stroke-width="5"/>`}
+      return g+`<text x="310" y="360" font-family="Noto Sans Runic, serif" font-size="46" fill="currentColor" text-anchor="middle">ᚨ</text>`},
+    ravens:()=>ring(200,200,100,1.6)+ring(200,200,130,1,'stroke-dasharray="2 7"')+`<circle cx="200" cy="200" r="54" fill="url(#hatch)"/><circle cx="200" cy="200" r="7" fill="currentColor"/>`+
+      `<g class="orbit"><path d="M200 58 l22 12 -22 -4 -22 4z" fill="currentColor"/><circle cx="200" cy="70" r="10" fill="currentColor"/><path d="M200 342 l22 -12 -22 4 -22 -4z" fill="currentColor"/><circle cx="200" cy="330" r="10" fill="currentColor"/></g>`,
+    mead:()=>[[112,232,60],[226,232,44],[312,232,32]].map(([x,y,r],i)=>
+      `<path d="M${x-r} ${y} A${r} ${r} 0 0 0 ${x+r} ${y} Z" fill="url(#hatch)" stroke="currentColor" stroke-width="3"/><line x1="${x-r-10}" y1="${y}" x2="${x+r+10}" y2="${y}" stroke="currentColor" stroke-width="3"/><circle cx="${x}" cy="${140+i*10}" r="${8-i*1.5}" fill="currentColor"/>`).join(''),
+    gungnir:()=>`<line x1="70" y1="340" x2="290" y2="120" stroke="currentColor" stroke-width="5"/><polygon points="346,64 326,118 288,132 300,94" fill="url(#hatch)" stroke="currentColor" stroke-width="3" stroke-linejoin="miter"/><line x1="250" y1="140" x2="270" y2="160" stroke="currentColor" stroke-width="4"/><line x1="92" y1="318" x2="104" y2="330" stroke="currentColor" stroke-width="4"/>`,
+    draupnir:()=>{let g=ring(200,200,56,14)+ring(200,200,40,1);for(let i=0;i<8;i++){const a=i*Math.PI/4-Math.PI/2;g+=ring((200+130*Math.cos(a)).toFixed(1),(200+130*Math.sin(a)).toFixed(1),16,5)}return g},
+    sleipnir:()=>{let g=`<rect x="92" y="148" width="216" height="26" fill="url(#hatch)" stroke="currentColor" stroke-width="3"/><polyline points="308,150 340,96 370,110" fill="none" stroke="currentColor" stroke-width="6" stroke-linejoin="round"/><line x1="92" y1="152" x2="58" y2="226" stroke="currentColor" stroke-width="3"/>`;
+      [106,120,148,162,238,252,280,294].forEach(x=>{g+=`<line x1="${x}" y1="174" x2="${x}" y2="318" stroke="currentColor" stroke-width="4"/>`});return g},
+    valhalla:()=>{let g='';for(let r=0;r<20;r++)for(let c=0;c<27;c++){g+=`<rect x="${62+c*10.2}" y="${96+r*11}" width="6.6" height="7.8" fill="currentColor"/>`}
+      return `<path d="M52 92 L200 34 L348 92" fill="none" stroke="currentColor" stroke-width="4"/>`+g+`<line x1="52" y1="324" x2="348" y2="324" stroke="currentColor" stroke-width="4"/>`},
+    week:()=>{let g=ring(200,200,120,2)+ring(200,200,78,1);const d=['L','Ma','Mi','J','V','S','D'];
+      for(let i=0;i<7;i++){const a=(i/7)*Math.PI*2-Math.PI/2,x=200+100*Math.cos(a),y=200+100*Math.sin(a),on=i===2;
+        g+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${on?19:12}" fill="${on?'currentColor':BG}" stroke="currentColor" stroke-width="2"/>`;
+        if(on)g+=`<text x="${x.toFixed(1)}" y="${(y+6).toFixed(1)}" font-family="Hanken Grotesk, sans-serif" font-weight="700" font-size="16" fill="${BG}" text-anchor="middle">Mi</text>`}
+      return g+`<circle cx="200" cy="200" r="30" fill="url(#hatch)"/><circle cx="200" cy="200" r="8" fill="currentColor"/>`},
+    ragnarok:()=>`<circle cx="186" cy="212" r="116" fill="url(#hatch)" stroke="currentColor" stroke-width="3"/><circle cx="262" cy="170" r="100" fill="${BG}" stroke="currentColor" stroke-width="2"/>`+
+      `<path d="M178 170 l12 22 l12 -22 l12 22 l12 -22" fill="none" stroke="currentColor" stroke-width="3"/>`
+  };
+  function medallion(inner){
+    return ring(200,200,196,1.4)+ring(200,200,188,.7)+ring(200,200,176,.7,`fill="${BG}"`)+
+      `<g transform="translate(40 40) scale(.8)">${inner}</g>`;
+  }
+  document.querySelectorAll('svg[data-art]').forEach(s=>{s.innerHTML=medallion(ART[s.dataset.art]())});
+
+  /* medalion din intrare: futhark pe cerc + valknut */
+  const FUTH='ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
+  $('medal').innerHTML=ring(200,200,196,1.4)+ring(200,200,184,.8)+ring(200,200,142,.8)+
+    `<g class="spin"><text font-family="Noto Sans Runic, serif" font-size="26" fill="currentColor" letter-spacing="0"><textPath href="#ringpath" textLength="990" lengthAdjust="spacing">${FUTH.split('').join(' ')}</textPath></text></g>`+
+    `<circle cx="200" cy="200" r="134" fill="url(#hatch)" opacity=".55"/>`+valknut(7);
+
+  /* ——— text tastat (IdiotBox) ——— */
+  const WORDS=['Înțelept.','Războinic.','Magician.','Poet.','Rătăcitor.','Cu un singur ochi.'];
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduce){let wi=0,ci=WORDS[0].length,del=true,pause=18;const el=$('typed');
+    setInterval(()=>{if(pause>0){pause--;return}const w=WORDS[wi];
+      if(del){ci--;if(ci<=0){del=false;wi=(wi+1)%WORDS.length}}
+      else{ci++;if(ci>=WORDS[wi].length){del=true;pause=22}}
+      el.textContent=WORDS[wi].slice(0,Math.max(ci,0))},70)}
+
+  /* ——— benzi derulante ——— */
+  const T1=['<b>Peste 170 de nume!</b>','Un singur ochi. Zero regrete.','Corbii au raportat: totul e sub control.','Valhalla: 540 de uși și tot se face coadă','Nouă nopți în copac. Recenzie: 10/10','Sleipnir are opt picioare. Nu întreba.','<b>Miedul poeziei: stoc epuizat</b>','Loki jură că n-a fost el','Runele nu se returnează'];
+  const T2=['<b>Ragnarök: amânat până la noi ordine</b>','Fenrir e la dietă. Deocamdată.','Hugin a uitat ce avea de spus. Munin nu.','Mímir încă păstrează ochiul. Nu îl dă înapoi.','<b>Draupnir: cumperi unul, primești opt</b>','Thor a pierdut iar ciocanul'];
+  const fill=(id,arr)=>{const h=arr.map(t=>`<span>${t}</span><span>✦</span>`).join('');$(id).innerHTML=h+h};
+  fill('tick1',T1); fill('tick2',T2);
+
+  /* ——— prolog: cuvintele se aprind la derulare ——— */
+  const rv=$('reveal'); const words=[];
+  rv.querySelectorAll('p').forEach(p=>{p.innerHTML=p.textContent.split(' ').map(w=>`<span class="w">${w}</span>`).join(' ');});
+  rv.querySelectorAll('.w').forEach(w=>words.push(w));
+  function lit(){const r=rv.getBoundingClientRect(),vh=innerHeight;
+    const p=Math.min(1,Math.max(0,(vh*0.9-r.top)/(r.height+vh*0.35)));
+    const n=Math.round(p*words.length);words.forEach((w,i)=>w.classList.toggle('on',i<n))}
+  if(reduce){words.forEach(w=>w.classList.add('on'))}else{addEventListener('scroll',lit,{passive:true});addEventListener('resize',lit);lit()}
+
+  /* ——— rune ——— */
+  const R=[['ᚠ','Fehu','f','vite, avere'],['ᚢ','Uruz','u','bour, taurul sălbatic'],['ᚦ','Thurisaz','th','uriaș'],['ᚨ','Ansuz','a','zeu — runa lui Odin însuși'],
+    ['ᚱ','Raidō','r','călătorie, drum călare'],['ᚲ','Kaunan','k','torță, flacără'],['ᚷ','Gebō','g','dar'],['ᚹ','Wunjō','w','bucurie'],
+    ['ᚺ','Hagalaz','h','grindină'],['ᚾ','Naudiz','n','nevoie'],['ᛁ','Īsaz','i','gheață'],['ᛃ','Jēra','j','an, recoltă'],
+    ['ᛇ','Eihwaz','ï','tisă, copacul veșnic verde'],['ᛈ','Perþō','p','sens necunoscut'],['ᛉ','Algiz','z','elan, ocrotire'],['ᛊ','Sōwilō','s','soare'],
+    ['ᛏ','Tīwaz','t','zeul Týr'],['ᛒ','Berkanan','b','mesteacăn'],['ᛖ','Ehwaz','e','cal'],['ᛗ','Mannaz','m','om'],
+    ['ᛚ','Laguz','l','apă, lac'],['ᛜ','Ingwaz','ng','zeul Ing'],['ᛞ','Dagaz','d','zi'],['ᛟ','Ōþalan','o','moștenire, pământul strămoșilor']];
+  const AETT=['Ætt-ul lui Freyr','Ætt-ul lui Hagal','Ætt-ul lui Týr'];
+  const OMENS=['Runele au vorbit. Odin nu oferă garanție.','Norna zice: „se poate”. Norna zice asta mereu.','Rezultat certificat de doi corbi independenți.','Dacă nu-ți place, mai aruncă o dată. Nimeni nu se uită.','Mímir ar fi dat un răspuns mai bun. Contra unui ochi.','Semn clar. Sau nu. Runele sunt vechi, nu clare.'];
+  const board=$('board');
+  board.innerHTML=AETT.map((n,a)=>`<div class="aett"><div class="label">${n}</div><div class="row8">`+
+    R.slice(a*8,a*8+8).map((r,k)=>{const i=a*8+k;return `<button class="rb" type="button" data-r="${i}" aria-pressed="${i===3}" aria-label="${r[1]}: ${r[3]}">${r[0]}<small>${r[2]}</small></button>`}).join('')+`</div></div>`).join('');
+  function pick(i,omen){const r=R[i];$('rBig').textContent=r[0];$('rName').textContent=r[1];
+    $('rSound').textContent=`Sunet: ${r[2]} · ${AETT[Math.floor(i/8)]}`;const m=$('rMean');m.textContent=r[3];m.classList.toggle('odin',i===3);
+    board.querySelectorAll('.rb').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.r===i)));
+    $('omen').textContent=omen||'Aleasă de mâna ta. Curaj.'}
+  board.addEventListener('click',e=>{const b=e.target.closest('.rb');if(b)pick(+b.dataset.r)});
+  $('cast').addEventListener('click',()=>{let n=0;const spin=setInterval(()=>{pick(Math.floor(Math.random()*24),'Runele se amestecă…');
+    if(++n>9){clearInterval(spin);pick(Math.floor(Math.random()*24),OMENS[Math.floor(Math.random()*OMENS.length)])}},reduce?0:70)});
+
+  /* ——— miercuri ——— */
+  const d=(3-new Date().getDay()+7)%7;
+  $('chip').textContent=d===0?'> Azi e miercuri. Azi e ziua lui Odin.':`> Următoarea zi a lui Odin: peste ${d} ${d===1?'zi':'zile'}.`;
+
+  /* ——— cuprins ——— */
+  const toc=$('toc');
+  $('tocBtn').addEventListener('click',()=>{try{toc.showModal()}catch(e){toc.setAttribute('open','')}});
+  $('tocClose').addEventListener('click',()=>toc.close());
+  toc.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>toc.close()));
+
+  /* ——— vânt (sunet generat, pornește doar la clic) ——— */
+  let ctx=null,gain=null,on=false;
+  function startWind(){
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const len=ctx.sampleRate*4,buf=ctx.createBuffer(1,len,ctx.sampleRate),data=buf.getChannelData(0);let last=0;
+    for(let i=0;i<len;i++){const w=Math.random()*2-1;last=(last+0.02*w)/1.02;data[i]=last*3.2}
+    const src=ctx.createBufferSource();src.buffer=buf;src.loop=true;
+    const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=420;bp.Q.value=0.8;
+    const lfo=ctx.createOscillator();lfo.frequency.value=0.07;const lg=ctx.createGain();lg.gain.value=260;lfo.connect(lg).connect(bp.frequency);
+    gain=ctx.createGain();gain.gain.value=0;src.connect(bp).connect(gain).connect(ctx.destination);src.start();lfo.start();
+  }
+  const setIcon=()=>{$('sWave').style.display=on?'':'none';$('sOff').style.display=on?'none':'';$('sLbl').textContent=on?'Vânt: pornit':'Vânt: oprit';$('sound').setAttribute('aria-pressed',String(on))};
+  setIcon();
+  $('sound').addEventListener('click',()=>{try{if(!ctx)startWind();on=!on;if(ctx.state==='suspended')ctx.resume();
+    gain.gain.setTargetAtTime(on?0.22:0,ctx.currentTime,0.6)}catch(e){on=false}setIcon()});
+})();
+</script>
+</body>
+</html>
